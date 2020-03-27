@@ -1,0 +1,24 @@
+{
+  "name": "chatbotnode",
+  "version": "1.0.0",
+  "description": "ChatbotNode",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zer0faction/ChatbotNode.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zer0faction/ChatbotNode/issues"
+  },
+  "homepage": "https://github.com/zer0faction/ChatbotNode#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security"
+  }
+}
