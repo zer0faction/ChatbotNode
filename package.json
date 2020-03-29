@@ -17,12 +17,8 @@
   },
   "homepage": "https://github.com/zer0faction/ChatbotNode#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "botbuilder": "^3.13.1",
-    "builder": "^5.0.0",
-    "express": "^4.17.1",
-    "fs": "0.0.1-security",
-    "http": "0.0.1-security",
-    "node-nlp": "^4.3.0"
+    "botbuilder": "^3.15.0",
+    "express": "^4.16.3",
+    "node-nlp": "^1.2.3"
   }
 }

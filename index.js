@@ -2,7 +2,6 @@ const builder = require('botbuilder');
 const express = require('express');
 const fs = require('fs');
 const { Recognizer } = require('node-nlp');
-
 const modelName = './smalltalk.nlp';
 const excelName = './smalltalk.xls';
 
@@ -15,11 +14,8 @@ const connector = new builder.ChatConnector({
 // Creates a node-nlp recognizer for the bot
 const recognizer = new Recognizer();
 if (fs.existsSync(modelName)) {
-    console.log("Dit is 1");
-    console.log("model name: " + modelName);
     recognizer.load(modelName);
 } else {
-    console.log("Dit is 2");
     recognizer.loadExcel(excelName);
     recognizer.save(modelName);
 }
@@ -28,11 +24,12 @@ if (fs.existsSync(modelName)) {
 // use the node-nlp recognizer to calculate the answer.
 const bot = new builder.UniversalBot(connector, (session) => {
     recognizer.recognize(session, (err, data) => {
-        session.send(data.answer || "I dont understand");
+        session.send(data.answer || 'I don\'t understand');
+        session.endDialog();
     });
 }).set('storage', new builder.MemoryBotStorage());
 
-recognizer.setBot(bot, true);
+recognizer.setBot(bot, false);
 
 // Creates the express application
 const app = express();
