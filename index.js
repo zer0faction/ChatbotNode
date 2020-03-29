@@ -1,36 +1,42 @@
-var http        = require('http');
-var express     = require('express');
-var port        = process.env.PORT || 8080;
-var bodyParser  = require('body-parser');
+const builder = require('botbuilder');
+const express = require('express');
+const fs = require('fs');
+const { Recognizer } = require('node-nlp');
 
-// Create the application
-var app = express();
+const modelName = './smalltalk.nlp';
+const excelName = './smalltalk.xls';
 
-app.set('PORT', port);
-
-app.use(bodyParser.json({
-    limit: '50mb'
-}));
-
-app.use(bodyParser.urlencoded({
-    extended: true,
-    limit: '50mb'
-}));
-
-app.get('/welcome', function(req, res, next){
-    res.json({
-        "Hello" : "Welcome to our API version 1!"
-    })
-    res.sendStatus(200);
-    res.end();
-    next();
+// Creates a connector for the chatbot
+const connector = new builder.ChatConnector({
+    appId: process.env.BOT_APP_ID,
+    appPassword: process.env.BOT_APP_PASSWORD,
 });
 
-// Start the server
-var port = process.env.PORT || app.get('PORT');
+// Creates a node-nlp recognizer for the bot
+const recognizer = new Recognizer();
+if (fs.existsSync(modelName)) {
+    console.log("Dit is 1");
+    console.log("model name: " + modelName);
+    recognizer.load(modelName);
+} else {
+    console.log("Dit is 2");
+    recognizer.loadExcel(excelName);
+    recognizer.save(modelName);
+}
 
-app.listen(port, function(){
-    console.log('Check http://localhost:' + port);
-});
+// Creates the bot using a memory storage, with a main dialog that
+// use the node-nlp recognizer to calculate the answer.
+const bot = new builder.UniversalBot(connector, (session) => {
+    recognizer.recognize(session, (err, data) => {
+        session.send(data.answer || "I dont understand");
+    });
+}).set('storage', new builder.MemoryBotStorage());
 
-module.exports = app;
+recognizer.setBot(bot, true);
+
+// Creates the express application
+const app = express();
+const port = process.env.PORT || 3000;
+app.post('/api/messages', connector.listen());
+app.listen(port);
+console.log(`Chatbot listening on port ${port}`);
