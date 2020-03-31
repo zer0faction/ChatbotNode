@@ -14,6 +14,23 @@ const connector = new builder.ChatConnector({
     appPassword: null,
 });
 
+const recognizer = new Recognizer();
+if (fs.existsSync(modelName)) {
+    recognizer.load(modelName);
+} else {
+    recognizer.loadExcel(excelName);
+    recognizer.save(modelName);
+}
+
+
+const bot = new builder.UniversalBot(connector, (session) => {
+    recognizer.recognize(session, (err, data) => {
+        session.send(data.answer || 'I don\'t understand');
+    });
+}).set('storage', new builder.MemoryBotStorage());
+
+recognizer.setBot(bot);
+
 // Creates a node-nlp recognizer for the bot
 const manager = new NlpManager({ languages: ['en'] });
 manager.load(modelName);
